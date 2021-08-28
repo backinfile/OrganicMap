@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.backinfile.map.Log;
 import com.backinfile.map.Settings;
+import com.backinfile.map.manager.GameManager;
 import com.backinfile.map.manager.GenManager;
 import com.backinfile.map.manager.RelaxManager;
 import com.backinfile.map.manager.SplitManager;
@@ -37,12 +38,15 @@ public class GameStage extends Stage {
 		timerQueue.applyTimer(Time2.SEC / 3, Time2.SEC, () -> {
 			relaxManager.relax(shapes, 0.1f);
 		});
+
+		timerQueue.applyTimer(Time2.SEC * 5, () -> {
+			GameManager.takeScreenshot();
+		});
 	}
 
 	@Override
 	public void act(float delta) {
 		super.act(delta);
-
 		timerQueue.update();
 	}
 
@@ -55,6 +59,7 @@ public class GameStage extends Stage {
 			drawShape(shape);
 		}
 		renderer.end();
+
 	}
 
 	private void drawLine(Point a, Point b) {
