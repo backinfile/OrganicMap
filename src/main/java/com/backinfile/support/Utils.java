@@ -123,6 +123,7 @@ public class Utils {
 	}
 
 	// S=(1/2)*(x1y2+x2y3+x3y1-x1y3-x2y1-x3y2)
+	// 右手法则：大于0逆时针，小于0顺时针
 	public static float calcArea(Point p1, Point p2, Point p3) {
 		return (p1.getX() * p2.getY() + p2.getX() * p3.getY() + p3.getX() * p1.getY() - p1.getX() * p3.getY()
 				- p2.getX() * p1.getY() - p3.getX() * p2.getY()) / 2f;

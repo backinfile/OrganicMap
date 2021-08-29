@@ -5,18 +5,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.backinfile.map.Log;
 import com.backinfile.map.model.Point;
 import com.backinfile.map.model.Rectangle;
 import com.backinfile.map.model.Shape;
 import com.backinfile.support.Timing;
 
-import javassist.bytecode.CodeIterator.Gap;
-
 public class RelaxManager {
 	private Map<Point, Point> pointMovements = new HashMap<>();
 
 	@Timing
-	public void relax(List<Shape> shapes, float rate) {
+	public double relax(List<Shape> shapes, float rate) {
+		double loss = 0;
 		pointMovements.clear();
 		for (var shape : shapes) {
 			if (!(shape instanceof Rectangle)) {
@@ -34,22 +34,25 @@ public class RelaxManager {
 		for (var entry : pointMovements.entrySet()) {
 			var p = entry.getKey();
 			var m = entry.getValue();
-			p.translate(m.mul(rate));
+			var finalMove = m.mul(rate);
+			p.translate(finalMove);
+			loss += finalMove.getVectorLengthPow();
 		}
 
+		Log.game.info("relax rate={} loss={}", rate, loss);
+		return loss;
 	}
-
-	private static final int[] DX = new int[] { 1, 1, -1, -1 };
-	private static final int[] DY = new int[] { 1, -1, 1, -1 };
 
 	private List<Point> getCornerPoints(Rectangle rectangle) {
 		List<Point> result = new ArrayList<>();
 		var center = rectangle.getCenter();
-		var suggestGap = (float) (GenManager.Gap / 2 * Math.cos(Math.PI / 4));
+		var suggestGap = GenManager.Gap / 2 * Math.cos(Math.PI / 4);
 		for (int i = 0; i < 4; i++) {
-			var p = rectangle.getPoints().get(i);
-			var distance = (float) p.getDistance(center);
-			result.add(center.add(p.sub(center).mul(suggestGap / distance)));
+			var p1 = rectangle.getPoints().get((i + 4 - 1) % 4);
+			var p2 = rectangle.getPoints().get((i + 4 + 0) % 4);
+			var p3 = rectangle.getPoints().get((i + 4 + 1) % 4);
+			var target = p3.sub(p1).roate90().unit().mul(suggestGap).add(center);
+			result.add(target);
 		}
 		return result;
 	}

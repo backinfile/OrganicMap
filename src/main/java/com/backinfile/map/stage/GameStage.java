@@ -3,7 +3,6 @@ package com.backinfile.map.stage;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.backinfile.map.Log;
 import com.backinfile.map.Settings;
 import com.backinfile.map.manager.GameManager;
 import com.backinfile.map.manager.GenManager;
@@ -24,6 +23,7 @@ public class GameStage extends Stage {
 	private ShapeRenderer renderer;
 	private List<Shape> shapes;
 	private TimerQueue timerQueue;
+	private long relaxTimerId;
 
 	public GameStage(Viewport viewport) {
 		super(viewport);
@@ -35,12 +35,12 @@ public class GameStage extends Stage {
 
 		RelaxManager relaxManager = new RelaxManager();
 
-		timerQueue.applyTimer(Time2.SEC / 3, Time2.SEC, () -> {
-			relaxManager.relax(shapes, 0.1f);
-		});
-
-		timerQueue.applyTimer(Time2.SEC * 5, () -> {
-			GameManager.takeScreenshot();
+		relaxTimerId = timerQueue.applyTimer(Time2.SEC / 30, Time2.SEC, () -> {
+			var loss = relaxManager.relax(shapes, 0.1f);
+			if (loss < 0.3f) {
+				GameManager.takeScreenshot();
+				timerQueue.removeTimer(relaxTimerId);
+			}
 		});
 	}
 

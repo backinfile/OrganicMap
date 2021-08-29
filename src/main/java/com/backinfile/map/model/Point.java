@@ -44,6 +44,10 @@ public class Point {
 		return Math.sqrt(Math.pow(p.x - x, 2) + Math.pow(p.y - y, 2));
 	}
 
+	public float getVectorLengthPow() {
+		return this.x * this.x + this.y * this.y;
+	}
+
 	public Point getTranslated(float dx, float dy) {
 		return new Point(this.x + dx, this.y + dy);
 	}
@@ -53,8 +57,19 @@ public class Point {
 		this.y += point.y;
 	}
 
-	public Point mul(float value) {
-		return new Point(this.x * value, this.y * value);
+	// 单位化
+	public Point unit() {
+		var sqrt = Math.sqrt(x * x + y * y);
+		return this.mul(1 / sqrt);
+	}
+
+	public Point mul(double value) {
+		return new Point((float) (this.x * value), (float) (this.y * value));
+	}
+
+	// 逆时针旋转90度
+	public Point roate90() {
+		return new Point(-y, x);
 	}
 
 	public Point sub(Point p) {

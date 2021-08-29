@@ -80,7 +80,6 @@ public class GenManager {
 		points.addAll(t1.getPoints());
 		points.addAll(t2.getPoints());
 		Rectangle rectangle = new Rectangle(points);
-		rectangle.reorder();
 //		Log.game.info("merge {} {}", t1, t2);
 		return rectangle;
 	}
