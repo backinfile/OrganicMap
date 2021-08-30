@@ -84,6 +84,10 @@ public class Point {
 		return Math.abs(this.x - p.x) < THRESHOLD && Math.abs(this.y - p.y) < THRESHOLD;
 	}
 
+	public Point copy() {
+		return new Point(this);
+	}
+
 	@Override
 	public String toString() {
 		return "(" + getX() + "," + getY() + ")";

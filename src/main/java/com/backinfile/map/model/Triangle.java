@@ -17,4 +17,8 @@ public class Triangle extends Shape {
 		}
 	}
 
+	@Override
+	public Shape deepCopy() {
+		return new Triangle(getCopyPoints());
+	}
 }

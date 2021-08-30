@@ -16,9 +16,8 @@ import com.backinfile.map.model.Triangle;
 import com.backinfile.support.Timing;
 
 public class GenManager {
-	public static final int Gap = 40;
-	public static final int PointNumber = 5;
-	public static final int RectSize = 50;
+	public static final int Gap = 50;
+	public static final int PointNumber = 8;
 
 	private static Map<Integer, Point> pointCache = new HashMap<>();
 
@@ -41,10 +40,9 @@ public class GenManager {
 	}
 
 	@Timing
-	public static List<Shape> randomMerge(List<Triangle> triangles, long seed) {
+	public static List<Shape> randomMerge(List<Triangle> triangles, Random random) {
 		List<Shape> shapes = new ArrayList<>();
 		Set<Triangle> mergedTriangles = new HashSet<>();
-		var random = new Random(seed);
 		// 随机合并两个为长方形
 		for (int round = 0; round < PointNumber; round++) {
 			for (int i = 0; i < triangles.size(); i++) {
@@ -52,7 +50,7 @@ public class GenManager {
 				if (mergedTriangles.contains(triangle)) {
 					continue;
 				}
-				if (random.nextBoolean()) {
+				if (random.nextDouble() < 0.3) {
 					continue;
 				}
 

@@ -3,6 +3,10 @@ package com.backinfile.support;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
@@ -127,5 +131,48 @@ public class Utils {
 	public static float calcArea(Point p1, Point p2, Point p3) {
 		return (p1.getX() * p2.getY() + p2.getX() * p3.getY() + p3.getX() * p1.getY() - p1.getX() * p3.getY()
 				- p2.getX() * p1.getY() - p3.getX() * p2.getY()) / 2f;
+	}
+
+	public static <T> List<T> asList(int rightShift, T... values) {
+		LinkedList<T> array = new LinkedList<T>();
+		array.addAll(Arrays.asList(values));
+		for (int i = 0; i < rightShift; i++) {
+			array.addFirst(array.pollLast());
+		}
+		return array;
+	}
+
+	public static <T> void sort(Collection<T> collection, Function1<Integer, T> keyMap) {
+		List<SortPair<T>> pairs = new ArrayList<>();
+		for (var value : collection) {
+			pairs.add(new SortPair<T>(value, keyMap.invoke(value)));
+		}
+		Collections.sort(pairs, (p1, p2) -> Integer.compare(p1.key, p2.key));
+		collection.clear();
+		for (var p : pairs) {
+			collection.add(p.value);
+		}
+	}
+
+	private static class SortPair<T> {
+		public T value;
+		public Integer key;
+
+		public SortPair(T value, Integer key) {
+			this.value = value;
+			this.key = key;
+		}
+	}
+
+	public static void main(String[] args) {
+		List<String> strings = new ArrayList<String>();
+		strings.add("123");
+		strings.add("12345");
+		strings.add("123456");
+		strings.add("1234");
+		strings.add("12345678");
+		strings.add("12");
+		sort(strings, str -> -str.length());
+		System.out.println(strings.toString());
 	}
 }

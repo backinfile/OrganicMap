@@ -17,6 +17,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import com.backinfile.map.Log;
+import com.backinfile.map.SysException;
 
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -46,8 +47,8 @@ public class ReflectionUtils {
 					}
 					String loggerName = Utils.isNullOrEmpty(timing.value()) ? ctMethod.getName() : timing.value();
 					ctMethod.addLocalVariable("$timeLogger", timeLoggerCtClass);
-					ctMethod.insertBefore(
-							"$timeLogger = new " + TimeLogger.class.getName() + "(\"" + loggerName + "\");");
+					ctMethod.insertBefore("$timeLogger = new " + TimeLogger.class.getName() + "(\"" + loggerName
+							+ "\", " + timing.minTime() + "L);");
 					ctMethod.insertAfter("$timeLogger.log();");
 					needRewrite = true;
 				}
@@ -59,6 +60,7 @@ public class ReflectionUtils {
 				Log.reflection.info("rewrite class {}", targetClassName);
 			} catch (Exception e) {
 				Log.reflection.error("error in rewrite class {}", targetClassName);
+				throw new SysException(e);
 			}
 		}
 	}
